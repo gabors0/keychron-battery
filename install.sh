@@ -159,8 +159,12 @@ if (( udev )); then
     say "Installing udev rule $UDEV_RULE (needs root)"
     as_root install -m644 "$src/70-keychron-hidraw.rules" "$UDEV_RULE"
     as_root udevadm control --reload-rules
-    as_root udevadm trigger --subsystem-match=hidraw --attr-match=idVendor=3434 || true
   fi
+  # Re-apply rules to already-plugged devices. (Not --attr-match=idVendor:
+  # that only checks the hidraw node itself, never its USB parent, so it
+  # matches nothing.) A change event on every hidraw node is harmless.
+  as_root udevadm trigger --action=change --subsystem-match=hidraw || true
+  as_root udevadm settle --timeout=5 || true
 fi
 
 case ":$PATH:" in *":$BIN_DIR:"*) ;; *) warn "$BIN_DIR is not on your PATH" ;; esac

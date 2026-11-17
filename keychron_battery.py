@@ -246,6 +246,12 @@ def cli_probe() -> int:
             print(f"  => {r.percent}%{' (charging)' if r.charging else ''}")
         except QueryError as e:
             print(f"  => error: {e}")
+            if isinstance(e, PermissionProblem):
+                rule = Path("/etc/udev/rules.d/70-keychron-hidraw.rules")
+                print("     " + ("udev rule is installed; replug the device or run:\n"
+                               "     sudo udevadm trigger --action=change --subsystem-match=hidraw"
+                               if rule.exists() else
+                               f"udev rule missing: run install.sh (installs {rule})"))
     return 0
 
 
@@ -420,7 +426,8 @@ def run_tray() -> int:
         err = str(res)
         last = state["last"]
         if isinstance(res, PermissionProblem):
-            msg = "No access to /dev/hidraw — install the udev rule (see README)"
+            msg = ("No access to /dev/hidraw — replug the mouse/receiver "
+                   "(or run install.sh for the udev rule)")
         elif not state["devices"]:
             msg = "Mouse/receiver not connected"
         else:
