@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Keychron Mouse Battery
+Comment=Tray icon showing the Keychron mouse battery level
+Exec=keychron-battery
+Icon=input-mouse
+Terminal=false
+Categories=Utility;
+X-GNOME-Autostart-enabled=true
