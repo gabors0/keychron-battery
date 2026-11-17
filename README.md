@@ -10,9 +10,26 @@ output report `B3 06` → input report `B4 06 …`, byte 20 = battery
 
 ## Install
 
-    ./install.sh          # symlinks ~/.local/bin/keychron-battery, autostart,
-                          # and installs the udev rule (asks for sudo)
-    keychron-battery &
+One-liner:
+
+    curl -fsSL https://raw.githubusercontent.com/gabors0/keychron-battery/main/install.sh | bash
+
+or from a clone:
+
+    git clone https://github.com/gabors0/keychron-battery && cd keychron-battery
+    ./install.sh
+
+The installer:
+
+- installs PySide6 if missing (dnf / apt / pacman / zypper, or `pip --user`; asks first)
+- copies the applet to `~/.local/share/keychron-battery`, links `~/.local/bin/keychron-battery`
+- adds an app-menu entry and a login autostart entry
+- installs the udev rule `/etc/udev/rules.d/70-keychron-hidraw.rules` (sudo) so
+  your user can talk to the mouse
+- starts the applet
+
+Options: `--no-udev`, `--no-autostart`, `--no-deps`, `--dev` (symlink to the
+checkout instead of copying), `-y` (don't ask), `--uninstall`.
 
 ## Debug
 
